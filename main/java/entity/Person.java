@@ -14,16 +14,18 @@ public class Person {
     private String address;
    private  String password;
     private Role role;
+    String admin_role;
 
 
     Person() {}
-    Person(String name, long phoneNumber, String email, String address, String password, Role role) {
+    Person(String name, long phoneNumber, String email, String address, String password, Role role, String admin_role) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.address = address;
         this.password = password;
         this.role = role;
+        this.admin_role = admin_role;
 
     }
 
@@ -84,6 +86,12 @@ public class Person {
     public void setName(String name) {
         this.name = name;
     }
+     public String getAdmin_role() {
+        return admin_role;
+     }
+     public void setAdmin_role(String admin_role) {
+        this.admin_role = admin_role;
+     }
 
     @Override
     public String toString() {

@@ -1,9 +1,6 @@
 package entity;
 
-enum Role{
-    admin,
-    user
-}
+
 
 
 public class Person {
@@ -17,8 +14,8 @@ public class Person {
     String admin_role;
 
 
-    Person() {}
-    Person(String name, long phoneNumber, String email, String address, String password, Role role, String admin_role) {
+    public Person() {}
+    public Person(String name, long phoneNumber, String email, String address, String password, Role role, String admin_role) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;

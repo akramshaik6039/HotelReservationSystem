@@ -2,6 +2,7 @@ package hotel;
 
 import entity.Person;
 import entity.Role;
+import org.slf4j.LoggerFactory;
 import service.LoginRegister;
 
 import java.util.Scanner;
@@ -10,13 +11,15 @@ import java.util.logging.Logger;
 
 public class HotelMain {
     final static Logger logger= Logger.getLogger(HotelMain.class.getName());
+       static  org.slf4j.Logger logger1= LoggerFactory.getLogger(HotelMain.class.getName());
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         boolean start = true;
         Person person ;
         LoginRegister loginRegister = new LoginRegister();
         while(start){
-            logger.info("********** HOTEL RESERVATION SYSTEM **********");
+            logger1.info("********** HOTEL RESERVATION SYSTEM **********");
             System.out.println("1) Register \n" +
                              "2) Login \n" +
                              "3) Exit");

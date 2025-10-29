@@ -1,6 +1,8 @@
 package entity;
 
-public class Admin extends Person {
+import dao.ManagePerson;
+
+public class Admin extends Person  {
 
     public Admin(){}
 

@@ -10,12 +10,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class HotelImplimentation implements Manage {
     private static final Logger log = LoggerFactory.getLogger(HotelImplimentation.class);
     Connection con= UtilDb.getConnection();
+    Scanner sc=new Scanner(System.in);
     @Override
     public void addHotel(Hotel hotel) {
         // hotelName,  location,  contactNo, address,  hotelEmail, createId
@@ -63,24 +63,49 @@ else {
     }
 
     @Override
-    public void deleteHotel(Hotel hotel) {
+    public void deleteHotel(int hotelId,int id) {
         try{
-
+            PreparedStatement preparedStatement=con.prepareStatement("delete from hotel where hotelId=? and createdBy=?");
+            preparedStatement.setInt(1,hotelId);
+            preparedStatement.setInt(2,id);
+            int res=preparedStatement.executeUpdate();
+            if (res>0){
+                log.info("Hotel deleted successfully!");
+            }
+            else {
+                log.error("Hotel deleted failure!");
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
     @Override
-    public Hotel getHotel(Hotel hotel) {
-        return null;
+    public void getHotel(int hotelId,int id) {
+        try{
+
+            PreparedStatement pre=con.prepareStatement("select * from hotel where hotelId=? and createdBy=?");
+            pre.setInt(1,hotelId);
+            pre.setInt(2,id);
+            ResultSet rs=pre.executeQuery();
+            System.out.println("Hotel Details:");
+            if (rs.next()){
+                System.out.println("Hotel Id :"+hotelId+" : Hotel Name :"+rs.getString("hotelName"));
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+
     }
 
     @Override
-    public List<Hotel> getHotels() {
+    public List<Hotel> getHotels(int id) {
         try{
             List <Hotel> hotelList=new ArrayList<>();
-            PreparedStatement pst=con.prepareStatement("select * from hotel");
+            PreparedStatement pst=con.prepareStatement("select * from hotel where createdBy=? ");
+            pst.setInt(1,id);
             ResultSet rs=pst.executeQuery();
             while(rs.next()){
                 int hotelId=rs.getInt("hotelId");
@@ -89,13 +114,106 @@ else {
                long contactNumber= rs.getLong("contactNumber");
                String address= rs.getString("address");
                String email= rs.getString("hotelEmail");
-               int id= rs.getInt("createdBy");
-                hotelList.add(new Hotel(hotelId,hotelName,location,contactNumber,address,email,id));
+               int id1= rs.getInt("createdBy");
+                hotelList.add(new Hotel(hotelId,hotelName,location,contactNumber,address,email,id1));
+            }
+            for (Hotel hotel:hotelList){
+                System.out.println("Hotel Details: Hotel Id:"+hotel.getHotelId()+", HotelName:"+hotel.getHotelName()    +", Hotel Location :"+hotel.getLocation()+", Contact Number :"+hotel.getContactNo()+", Address :"+hotel.getAddress()+", HotelMail :"+hotel.getHotelEmail());
             }
             return hotelList;
         }catch (Exception e){
             e.printStackTrace();
             return null;
+        }
+
+    }
+
+    @Override
+    public void getHotelsForUser() {
+        try{
+            List <String> hotelList=new ArrayList<>();
+            hotelList.add("Id HotelName Location");
+            PreparedStatement pst=con.prepareStatement("select * from hotel");
+            ResultSet rs=pst.executeQuery();
+           if (!hotelList.isEmpty()){
+               while(rs.next()){
+                   int hotelId=rs.getInt("hotelId");
+                   String hotelName=rs.getString("hotelName");
+                   String location=rs.getString("location");
+                   hotelList.add(hotelId+" "+hotelName+" "+location);
+               }
+           }else System.out.println("No hotels found!");
+
+
+            for(String hotelName:hotelList){
+                System.out.println(hotelName);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+
+    }
+
+    @Override
+    public void getAllHotelNames() {
+        try{
+
+            Map<Integer,String> hotelList=new TreeMap<>();
+           int id=0;
+            hotelList.put(id,"Locations");
+            PreparedStatement pst=con.prepareStatement("select * from hotel ");
+            ResultSet rs=pst.executeQuery();
+
+               while(rs.next()){
+                   int hotelId=rs.getInt("hotelId");
+                   String hotelName=rs.getString("location");
+                   hotelList.put(++id,hotelName);
+               }
+            if(hotelList.isEmpty()){
+                System.out.println("No hotels found!");
+            }
+           else System.out.println("No hotels found!");
+            for(Map.Entry<Integer,String> entry:hotelList.entrySet()){
+                if(entry.getValue().equals("Locations")){
+                    System.out.println(entry.getValue());
+                }
+                else System.out.println(entry.getKey()+" "+entry.getValue());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+    }
+
+    @Override
+    public void getHotelsForUserByLocation(String cityName) {
+        try{
+            ArrayList<String> hotelList=new ArrayList<>();
+            PreparedStatement pst=con.prepareStatement("select * from hotel where location=? ");
+            pst.setString(1,cityName);
+            ResultSet rs=pst.executeQuery();
+//
+                    while(rs.next()){
+                        int  hotelId=rs.getInt("hotelId");
+                        String hotelName=rs.getString("hotelName");
+                        String location=rs.getString("location");
+                        hotelList.add("Hotel Id :"+hotelId+" HotelName :"+hotelName+" Location :"+location);
+                    }
+                    for(int i=0;i<hotelList.size();i++){
+                        System.out.println(hotelList.get(i));
+                    }
+            if(hotelList.isEmpty()){
+                System.out.println("No hotels found Currently in this city!");
+                if(!hotelList.contains(cityName)){
+                    System.out.println("No hotels found Currently in this city!");
+              }
+
+           }
+
+        }catch (Exception e){
+            e.printStackTrace();
+
         }
 
     }

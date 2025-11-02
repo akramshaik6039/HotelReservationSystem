@@ -12,7 +12,7 @@ public class Person {
    private  String password;
     private Role role;
     String admin_role;
-
+    private double balance;
 
     public Person() {}
     public Person(String name, long phoneNumber, String email, String address, String password, Role role, String admin_role) {
@@ -24,6 +24,14 @@ public class Person {
         this.role = role;
         this.admin_role = admin_role;
 
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     public int getId() {

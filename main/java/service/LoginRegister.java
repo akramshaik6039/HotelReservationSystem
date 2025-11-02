@@ -1,11 +1,10 @@
 package service;
 
 
-import entity.Admin;
-import entity.Hotel;
-import entity.Person;
-import entity.Role;
+import dao.Booking;
+import entity.*;
 
+import exceptions.InvalidHotelId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util_res.UtilDb;
@@ -21,7 +20,9 @@ public class LoginRegister {
     Connection con = UtilDb.getConnection();
     Scanner sc = new Scanner(System.in);
     HotelImplimentation  hotelImplimentation = new HotelImplimentation();
+    BookingImplimentation bookingImplimentation=new BookingImplimentation();
     PersonImpliment implimentsPerson=new PersonImpliment();
+   RoomImplimentaion implimentsRoom=new RoomImplimentaion();
     public void register(Person person) {
 
         try{
@@ -39,10 +40,10 @@ public class LoginRegister {
                 pre.setString(7,person.getPassword());
                int res=pre.executeUpdate();
                 if(res>0){
-                    log.info("Register successfully!");
+                    log.info("***** Register successfully! *****");
                 }
                 else{
-                    log.info("Register failed!");
+                    log.error("----- Register failed! -----");
                 }
             }
             else if(person.getRole().toString().equals("user")){
@@ -56,9 +57,9 @@ public class LoginRegister {
                 pre.setString(6,person.getPassword());
                 int res=pre.executeUpdate();
                 if(res>0){
-                    log.info("Register successfully!");
+                    log.info("***** Register successfully! *****");
                 }else{
-                    log.info("Register failed!");
+                    log.info("----- Register failed! -----");
                 }
 
             }
@@ -77,55 +78,92 @@ public class LoginRegister {
                     String role=rs.getString("role");
                     if(role.equalsIgnoreCase("admin")){
                         boolean start=true;
+                        log.info("***** Login successfully! Welcome to Admin DashBoard "+ rs.getString("name")+" *****");
                        while(start){
-                           log.info("Login successfully! Welcome to Admin DashBoard {}", rs.getString("name"));
-                           System.out.println("1)Add Hotel \n2)Delete Hotel \n3)Update Hotel \n4)Get a Hotel By Name \n5)Get All Hotels\n6)Edit Profile \n7)Exit");
+                           System.out.println("1)Add Hotel \n2)Delete Hotel \n3)Update Hotel \n4)Get Room Details of a Hotel \n5)Get All Hotels\n6)Edit Profile \n7)Exit");
                            int choose1=sc.nextInt();
                            // hotelName,  location,  contactNo, address,  hotelEmail, createId
                            switch(choose1){
                                case 1:
-                                   log.info("Enter Hotel Name");
+                                   System.out.println("Enter Hotel Name");
                                    String hotelName=sc.next();
-                                   log.info("Enter Hotel Location");
-                                   String hotelLocation=sc.next();
-                                   log.info("Enter Hotel Contact No");
+                                   System.out.println("Enter Hotel Location");
+                                   String hotelLocation=sc.next().toLowerCase();
+                                   System.out.println("Enter Hotel Contact No");
                                    long hotelContactNo=sc.nextLong();
-                                   log.info("Enter Hotel Address");
+                                   System.out.println("Enter Hotel Address");
                                    String hotelAddress=sc.next();
-                                   log.info("Enter Hotel HotelEmail");
+                                   System.out.println("Enter Hotel HotelEmail");
                                    String hotelEmail=sc.next();
                                    hotelImplimentation.addHotel(new Hotel(hotelName,hotelLocation,hotelContactNo,hotelAddress,hotelEmail,rs.getInt("id")));
                                    break;
-                               case 2:log.info("Enter Hotel Name");
-                               String hotelName1=sc.next();
-                               log.info("Enter Hotel Location");
-                               String hotelLocation1=sc.next();
-                               log.info("Enter Hotel Contact No");
-                               long hotelContactNo1=sc.nextLong();
-                               log.info("Enter Hotel Address");
-                                   hotelImplimentation.deleteHotel(new Hotel());
+                               case 2: System.out.println(hotelImplimentation.getHotels(rs.getInt("id")).toString());
+                                   System.out.println("Enter Hotel Id");
+                                 int hotelId1=sc.nextInt();
+                                   hotelImplimentation.deleteHotel(hotelId1,rs.getInt("id"));
                                    break;
                                case 3:
-                                   log.info(hotelImplimentation.getHotels().toString());
-                                    log.info("Enter Hotel Id");
+                                   System.out.println(hotelImplimentation.getHotels(rs.getInt("id")).toString());
+                                   System.out.println("Enter Hotel Id");
                                     int  hotelId=sc.nextInt();
-                                   log.info("Enter Hotel Name");
+                                   System.out.println("Enter Hotel Name");
                                    String hotelName2=sc.next();
-                                   log.info("Enter Hotel Location");
-                                   String hotelLocation2=sc.next();
-                                   log.info("Enter Hotel Contact No");
+                                   System.out.println("Enter Hotel Location");
+                                   String hotelLocation2=sc.next().toLowerCase();
+                                   System.out.println("Enter Hotel Contact No");
                                    long hotelContactNo2=sc.nextLong();
-                                   log.info("Enter Hotel Address");
+                                   System.out.println("Enter Hotel Address");
                                    String hotelAddress2=sc.next();
-                                   log.info("Enter Hotel HotelEmail");
+                                   System.out.println("Enter Hotel HotelEmail");
                                    String hotelEmail2=sc.next();
                                    hotelImplimentation.updateHotel(new Hotel(hotelId,hotelName2,hotelLocation2,hotelContactNo2,hotelAddress2,hotelEmail2,rs.getInt("id")));
                                    break;
-                               case 4:hotelImplimentation.getHotel(new Hotel());
+                               case 4:hotelImplimentation.getHotels(rs.getInt("id"));
+                                   System.out.println("Enter Hotel Id");
+                               int  hotelId3=sc.nextInt();
+                               hotelImplimentation.getHotel(hotelId3,rs.getInt("id"));
+                               boolean startRoom=true;
+                               while(startRoom){
+                                   System.out.println("1)Add Room\n"+
+                                           "2)Update Room By RoomId\n"+
+                                           "3)Delete Room By RoomId\n"+
+                                           "4)View Rooms\n"+
+                                           "5)Exit");
+                                   int choose2=sc.nextInt();
+                                   switch(choose2){
+                                       case 1:implimentsRoom.addRoom(hotelId3);
+                                       break;
+                                       case 2:implimentsRoom.getAllRooms(hotelId3);
+                                                System.out.println("Enter Room Id");
+                                                int roomId1=sc.nextInt();
+                                           System.out.println("Enter Room Number");
+                                           int roomNumber1=sc.nextInt();
+                                                implimentsRoom.updateRoom(roomId1,roomNumber1);
+                                           break;
+                                       case 3:implimentsRoom.getAllRooms(hotelId3);
+                                       System.out.println("Enter Room Id");
+                                       int roomId2=sc.nextInt();
+
+                                           System.out.println("Sure Are You Want To Delete Room Details (y/n)");
+                                           char confirm=sc.next().charAt(0);
+                                      if(confirm=='y'){
+                                          implimentsRoom.deleteRoom(roomId2);
+                                      }else System.out.println("Wrong Confirmation");
+                                           break;
+                                       case 4:implimentsRoom.getAllRooms(hotelId3);
+                                           break;
+                                           case 5:startRoom=false;break;
+                                           default:System.out.println("Invalid choice");break;
+                                   }
+                               }
+
                                    break;
-                               case 5:log.info(hotelImplimentation.getHotels().toString());
+                               case 5:hotelImplimentation.getHotels(rs.getInt("id"));
                                    break;
-                               case 6:implimentsPerson.updatePerson(email,password);
+                               case 6:boolean flag=implimentsPerson.viewDetails(email,role);
+                               if(flag==true){
+                                   start=false;
+                               }
                                    break;
                                case 7:start=false;
                                    break;
@@ -133,13 +171,50 @@ public class LoginRegister {
                            }
                        }
                     }
-                    else if(role.equals("user")){
-                        log.info("Login successfully! Welcome to User DashBoard {}", rs.getString("name"));
-                        System.out.println("1)View All Hotels \n2)View Hotel By City\n3)Edit Profile\n4)Exit");
+                    else if(role.equalsIgnoreCase("USER")){
+                        log.info(" ***** Login successfully! Welcome to User DashBoard "+ rs.getString("name")+" *****");
+                        boolean start2=true;
+                        while(start2){
+                            System.out.println("1)View All Hotels \n2)View Hotel By City\n3)Profile\n4)Exit");
+                            int choose2=sc.nextInt();
+                            switch(choose2){
+                                case 1:hotelImplimentation.getHotelsForUser();
+
+                                        System.out.println("*** Choose a Hotel Id To Book a Hotel ***");
+                                        int hotelId=sc.nextInt();
+                                           implimentsRoom.getHotelById(hotelId);
+                                           System.out.println("Enter Room Id");
+                                           int roomId1=sc.nextInt();
+                                            bookingImplimentation.addBooking(roomId1,rs.getInt("id"));
+
+                                break;
+                                case 2:hotelImplimentation.getAllHotelNames();
+                                System.out.println("*** Choose a City Hotels ***");
+                                String cityHotelName=sc.next();
+                                    hotelImplimentation.getHotelsForUserByLocation(cityHotelName);
+                                    System.out.println("*** Choose a Hotel Id To Book a Hotel ***");
+                                    int hotelId1=sc.nextInt();
+                                    implimentsRoom.getHotelById(hotelId1);
+                                    System.out.println("Enter Room Id");
+                                    int roomId2=sc.nextInt();
+                                    bookingImplimentation.addBooking(roomId2,rs.getInt("id"));
+
+
+
+                                    break;
+                                    case 3:implimentsPerson.viewDetails(email,role);
+                                        break;
+                                        case 4:start2=false;
+                                        break;
+                                        default:log.info("Invalid choice!");
+
+
+                            }
+                        }
                     }
                 }
                 else{
-                    log.error("Login failed!,Give Correct Credentials...");
+                    log.error("***** Login failed!,Give Correct Credentials/Register Your Details *****");
                 }
             }catch(Exception e){
                 e.printStackTrace();

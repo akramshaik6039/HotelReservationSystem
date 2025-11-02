@@ -18,8 +18,9 @@ public class HotelMain {
         boolean start = true;
         Person person ;
         LoginRegister loginRegister = new LoginRegister();
+        logger1.info("********** HOTEL RESERVATION SYSTEM **********");
         while(start){
-            logger1.info("********** HOTEL RESERVATION SYSTEM **********");
+
             System.out.println("1) Register \n" +
                              "2) Login \n" +
                              "3) Exit");

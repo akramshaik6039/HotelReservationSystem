@@ -17,15 +17,18 @@ public class Hotel {
 
     @Override
     public String toString() {
-        return "Hotel{" +
-                "hotelId=" + hotelId +
-                ", hotelName='" + hotelName + '\'' +
-                ", location='" + location + '\'' +
-                ", contactNo=" + contactNo +
-                ", address='" + address + '\'' +
-                ", hotelEmail='" + hotelEmail + '\'' +
-                ", createId=" + createId +
-                '}';
+        return
+                "hotelId: " + hotelId +
+                ", hotelName: '" + hotelName + '\'' +
+                ", location: '" + location + '\'' +
+                ", contactNo: " + contactNo +
+                ", address: '" + address + '\'' +
+                ", hotelEmail: '" + hotelEmail + '\'' +
+                ", createId: " + createId ;
+    }
+    void display(){
+        System.out.println("Hotel Id: " + hotelId+" "+"Hotel Name: " + hotelName+" "+location+" "+contactNo+" "+address+" "+hotelEmail);
+
     }
 
     public Hotel(int hotelId, String hotelName, String location, long contactNo, String address, String hotelEmail, int createId) {

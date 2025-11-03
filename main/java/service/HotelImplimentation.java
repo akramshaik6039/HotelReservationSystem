@@ -160,8 +160,10 @@ else {
         try{
 
             Map<Integer,String> hotelList=new TreeMap<>();
+//            Set<String> hotelList2=new TreeSet<>();
            int id=0;
             hotelList.put(id,"Locations");
+//            hotelList2.add("Locations");
             PreparedStatement pst=con.prepareStatement("select * from hotel ");
             ResultSet rs=pst.executeQuery();
 
@@ -169,17 +171,23 @@ else {
                    int hotelId=rs.getInt("hotelId");
                    String hotelName=rs.getString("location");
                    hotelList.put(++id,hotelName);
+//                   hotelList2.add(hotelName);
                }
             if(hotelList.isEmpty()){
                 System.out.println("No hotels found!");
             }
-           else System.out.println("No hotels found!");
+
             for(Map.Entry<Integer,String> entry:hotelList.entrySet()){
-                if(entry.getValue().equals("Locations")){
+                if(entry.getValue().contains("Locations")){
                     System.out.println(entry.getValue());
                 }
                 else System.out.println(entry.getKey()+" "+entry.getValue());
             }
+//            for(String hotelName:hotelList2){
+//                if(hotelList.containsKey("Locations")){
+//                    System.out.println(hotelName);
+//                }else System.out.println("No hotels found!");
+//            }
         }catch (Exception e){
             e.printStackTrace();
 

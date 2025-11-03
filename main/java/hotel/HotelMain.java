@@ -2,9 +2,11 @@ package hotel;
 
 import entity.Person;
 import entity.Role;
+import exceptions.InvalidInput;
 import org.slf4j.LoggerFactory;
 import service.LoginRegister;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -24,7 +26,16 @@ public class HotelMain {
             System.out.println("1) Register \n" +
                              "2) Login \n" +
                              "3) Exit");
-            int choice=sc.nextInt();
+            int choice=-1;
+            try {
+                 choice = sc.nextInt();
+            }catch (InputMismatchException e){
+                if(choice==-1){
+                    logger1.error("Invalid choice");
+                    sc.nextLine();
+                    continue;
+                }
+            }
             switch (choice){
 
                 case 1:
@@ -32,10 +43,23 @@ public class HotelMain {
                     String name=sc.next();
                     System.out.println("Please enter your Email");
                 String email=sc.next();
+                if(!email.contains("@")){
+                    throw new InvalidInput("Invalid email,Should be like '@gmail.com'");
+                }
                     System.out.println("Please enter your Password");
                 String password=sc.next();
+
                     System.out.println("Please enter your Phone Number");
-                long phoneNumber=sc.nextLong();
+                long phoneNumber=-1;
+                try{
+                    phoneNumber=sc.nextLong();
+                }catch (InputMismatchException e){
+                    System.out.println("Invalid phone number");
+                    sc.nextLine();
+                    while(phoneNumber==-1){
+                        phoneNumber=sc.nextLong();
+                    }
+                }
                     System.out.println("Please enter your Address");
                 String address=sc.next();
                     System.out.println("Please choose your Role (admin/user)");
